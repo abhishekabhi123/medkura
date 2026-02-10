@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+target/
+uploads/
+
+src/main/resources/application.properties
+

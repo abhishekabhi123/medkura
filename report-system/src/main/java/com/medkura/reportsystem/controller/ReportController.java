@@ -4,10 +4,20 @@ import com.medkura.reportsystem.dto.ReportDetailResponse;
 import com.medkura.reportsystem.dto.ReportListResponse;
 import com.medkura.reportsystem.dto.ReportUploadResponse;
 import com.medkura.reportsystem.dto.StatusUpdateRequest;
+import com.medkura.reportsystem.entity.Report;
+import com.medkura.reportsystem.repository.ReportRepository;
 import com.medkura.reportsystem.service.ReportService;
+
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import java.io.File;
+import java.nio.file.Files;
 
 @RestController
 @RequestMapping("/api/reports")
@@ -15,9 +25,13 @@ import java.util.List;
 public class ReportController {
 
     private final ReportService reportService;
+    private final ReportRepository reportRepository;
 
-    public ReportController(ReportService reportService) {
+    public ReportController(
+            ReportService reportService,
+            ReportRepository reportRepository) {
         this.reportService = reportService;
+        this.reportRepository = reportRepository;
     }
 
     @PostMapping
@@ -45,6 +59,27 @@ public class ReportController {
             @PathVariable Long id,
             @RequestBody StatusUpdateRequest request) {
         reportService.updateStatus(id, request.getStatus());
+    }
+
+    @GetMapping("/{id}/file")
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long id) throws Exception {
+
+        Report report = reportRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Report not found"));
+
+        File file = new File(report.getFilePath());
+        Resource resource = new UrlResource(file.toURI());
+
+        String contentType = Files.probeContentType(file.toPath());
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "inline; filename=\"" + file.getName() + "\"")
+                .header(HttpHeaders.CONTENT_TYPE, contentType)
+                .body(resource);
     }
 
 }

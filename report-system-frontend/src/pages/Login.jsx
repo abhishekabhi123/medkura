@@ -23,23 +23,45 @@ export default function Login() {
     }
 
     return (
-        <div style={{ padding: 40 }}>
-            <h2>Login</h2>
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <div className="bg-white p-8 rounded-lg shadow w-full max-w-md">
 
-            <input
-                placeholder="Email"
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <br /><br />
+                <h2 className="text-2xl font-bold mb-6 text-center">
+                    Login
+                </h2>
 
-            <input
-                type="password"
-                placeholder="Password"
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <br /><br />
+                <div className="space-y-4">
 
-            <button onClick={handleLogin}>Login</button>
+                    <div>
+                        <label className="block mb-1 font-medium">
+                            Email
+                        </label>
+                        <input
+                            className="w-full border rounded p-2"
+                            placeholder="Enter email"
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block mb-1 font-medium">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            className="w-full border rounded p-2"
+                            placeholder="Enter password"
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                    <button
+                        onClick={handleLogin}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded mt-2"
+                    >
+                        Login
+                    </button>
+                </div>
+            </div>
         </div>
     )
 

@@ -40,6 +40,15 @@ public class ReportService {
 
                 file.transferTo(new File(filePath));
 
+                if (name == null || name.isBlank())
+                        throw new RuntimeException("Report name required");
+
+                if (type == null || type.isBlank())
+                        throw new RuntimeException("Report type required");
+
+                if (file == null || file.isEmpty())
+                        throw new RuntimeException("File required");
+
                 Report report = Report.builder()
                                 .name(name)
                                 .type(type)
@@ -93,8 +102,19 @@ public class ReportService {
                 Report report = reportRepository.findById(id)
                                 .orElseThrow(() -> new RuntimeException("Report not found"));
 
+                ReportStatus current = report.getStatus();
+
+                if (current == ReportStatus.COMPLETED) {
+                        throw new RuntimeException("Completed report cannot change status");
+                }
+
+                if (current == ReportStatus.UPLOADED
+                                && status == ReportStatus.COMPLETED) {
+                        throw new RuntimeException("Must process before completing");
+                }
+
                 report.setStatus(status);
-                report.setUpdatedAt(java.time.LocalDateTime.now());
+                report.setUpdatedAt(LocalDateTime.now());
 
                 if (status == ReportStatus.COMPLETED) {
                         report.setSummary(
