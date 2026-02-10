@@ -30,7 +30,7 @@ public class ReportService {
                         throws IOException {
                 User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
-                String uploadDir = "uploads/";
+                String uploadDir = System.getProperty("user.dir") + "/uploads/";
                 File dir = new File(uploadDir);
                 if (!dir.exists())
                         dir.mkdirs();
