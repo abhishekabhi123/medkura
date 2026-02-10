@@ -59,6 +59,10 @@ CREATE DATABASE report_system;
 backend/src/main/resources/application.properties
 ```
 
+```
+Copy application-example.properties to application.properties and update credentials
+```
+
 3. **Start the backend:**
 
 ```bash
@@ -144,4 +148,4 @@ Screenshots demonstrating login, dashboard, upload, and report detail flows are 
 
 ## Author
 
-**Abhi** — Full Stack Developer
+**Abhishek P S**
