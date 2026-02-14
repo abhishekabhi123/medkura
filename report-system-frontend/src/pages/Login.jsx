@@ -6,9 +6,11 @@ export default function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleLogin = async () => {
+        setError("");
         try {
             const res = await api.post("/auth/login", {
                 email,
@@ -18,7 +20,7 @@ export default function Login() {
             localStorage.setItem("userId", res.data.userId);
             navigate("/reports");
         } catch (err) {
-            alert(err.response?.data?.error || "Login failed");
+            setError(err.response?.data?.error || "Login failed");
         }
     }
 
@@ -54,6 +56,11 @@ export default function Login() {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
+                    {error && (
+                        <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">
+                            {error}
+                        </div>
+                    )}
                     <button
                         onClick={handleLogin}
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded mt-2"

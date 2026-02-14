@@ -6,9 +6,11 @@ export default function Upload() {
     const [file, setFile] = useState(null);
     const [name, setName] = useState("");
     const [type, setType] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleUpload = async () => {
+        setError("");
         const userId = localStorage.getItem("userId");
 
         const formData = new FormData();
@@ -17,9 +19,12 @@ export default function Upload() {
         formData.append("type", type);
         formData.append("userId", userId);
 
-        await api.post("/reports", formData);
-
-        navigate("/reports");
+        try {
+            await api.post("/reports", formData);
+            navigate("/reports");
+        } catch (err) {
+            setError(err.response?.data?.error || "Upload failed");
+        }
     };
 
     return (
@@ -69,6 +74,12 @@ export default function Upload() {
                             />
                         </label>
                     </div>
+
+                    {error && (
+                        <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">
+                            {error}
+                        </div>
+                    )}
 
                     <div className="flex gap-3 pt-4">
                         <button

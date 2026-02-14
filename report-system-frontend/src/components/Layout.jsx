@@ -20,7 +20,7 @@ export default function Layout({ children }) {
                         onClick={logout}
                         className="text-red-600 font-medium"
                     >
-                        Logout
+                        Log out
                     </button>
                 </div>
             </div>

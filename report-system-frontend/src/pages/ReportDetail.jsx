@@ -7,29 +7,52 @@ export default function ReportDetail() {
     const navigate = useNavigate();
 
     const [report, setReport] = useState(null);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         fetchReport();
     }, []);
 
     const fetchReport = async () => {
-        const res = await api.get(`/reports/${id}`);
-        setReport(res.data);
+        setError("");
+        try {
+            const res = await api.get(`/reports/${id}`);
+            setReport(res.data);
+        } catch (err) {
+            setError(err.response?.data?.error || "Failed to load report");
+        }
     };
-
 
     const updateStatus = async (status) => {
-        await api.patch(`/reports/${id}/status`, { status });
-        fetchReport();
+        setError("");
+        try {
+            await api.patch(`/reports/${id}/status`, { status });
+            fetchReport();
+        } catch (err) {
+            setError(err.response?.data?.error || "Failed to update status");
+        }
     };
 
-    if (!report) return <div>Loading...</div>;
+    if (!report && !error) return <div>Loading...</div>;
+    if (error && !report) return (
+        <div className="min-h-screen bg-gray-100 py-10">
+            <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm mb-4">{error}</div>
+                <button onClick={() => navigate("/reports")} className="text-blue-600 hover:underline">← Back to reports</button>
+            </div>
+        </div>
+    );
 
     return (
         <div className="min-h-screen bg-gray-100 py-10">
             <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow">
 
                 <h2 className="text-2xl font-bold mb-6">Report Detail</h2>
+                {error && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm mb-4">
+                        {error}
+                    </div>
+                )}
                 <div className="space-y-3">
                     <p>
                         <span className="font-semibold">Name:</span>{" "}
